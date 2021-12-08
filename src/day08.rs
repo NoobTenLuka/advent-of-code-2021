@@ -165,7 +165,7 @@ fn solution_2(all_inputs_and_outputs: &[(String, String)]) {
 }
 
 fn read_inputs<T: AsRef<Path>>(path: T) -> Vec<(String, String)> {
-    let file_content = fs::read_to_string(path).expect("Input file not found");
+    let file_content = fs::read_to_string(path).expect("Input file not found.");
 
     file_content
         .split('\n')
