@@ -1,7 +1,7 @@
 use std::{fs, path::Path, time::Instant};
 
 pub fn run() {
-    let inputs = read_inputs("inputs/01-input.txt");
+    let inputs = read_inputs("inputs/03-input.txt");
 
     let start = Instant::now();
     solution_1(&inputs);
