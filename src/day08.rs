@@ -15,7 +15,7 @@ pub fn run() {
     let start = Instant::now();
     solution_2(&inputs);
     println!(
-        "It took {:?} for the first solution to complete.",
+        "It took {:?} for the second solution to complete.",
         start.elapsed()
     );
 }
