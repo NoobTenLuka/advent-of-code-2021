@@ -1,5 +1,7 @@
 use std::{collections::VecDeque, fs, path::Path, time::Instant};
 
+use itertools::Itertools;
+
 pub fn run() {
     let inputs = read_inputs("inputs/10-input.txt");
 
@@ -9,9 +11,15 @@ pub fn run() {
         "It took {:?} for the first solution to complete.",
         start.elapsed()
     );
+    let start = Instant::now();
+    solution_2(&inputs);
+    println!(
+        "It took {:?} for the second solution to complete.",
+        start.elapsed()
+    );
 }
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 enum Open {
     Round = 3,
     Bracket = 57,
@@ -61,7 +69,58 @@ fn solution_1(inputs: &[String]) {
         })
         .sum();
 
-    println!("{}", sum);
+    println!("The total syntax error score is {}.", sum);
+}
+
+fn solution_2(inputs: &[String]) {
+    let mut iter = inputs
+        .iter()
+        .map(|s| {
+            let mut open: VecDeque<Open> = VecDeque::new();
+            for c in s.chars() {
+                match c {
+                    '(' => open.push_front(Open::Round),
+                    '[' => open.push_front(Open::Bracket),
+                    '{' => open.push_front(Open::Curly),
+                    '<' => open.push_front(Open::LT),
+                    ')' => {
+                        let current_open = open.pop_front().unwrap();
+                        if current_open != Open::Round {
+                            return 0;
+                        }
+                    }
+                    ']' => {
+                        let current_open = open.pop_front().unwrap();
+                        if current_open != Open::Bracket {
+                            return 0;
+                        }
+                    }
+                    '}' => {
+                        let current_open = open.pop_front().unwrap();
+                        if current_open != Open::Curly {
+                            return 0;
+                        }
+                    }
+                    '>' => {
+                        let current_open = open.pop_front().unwrap();
+                        if current_open != Open::LT {
+                            return 0;
+                        }
+                    }
+                    _ => (),
+                }
+            }
+            open.iter().fold(0i64, |acc, o| match o {
+                Open::Round => acc * 5 + 1,
+                Open::Bracket => acc * 5 + 2,
+                Open::Curly => acc * 5 + 3,
+                Open::LT => acc * 5 + 4,
+            })
+        })
+        .filter(|x| *x != 0)
+        .sorted();
+
+    println!("The middle score is {}.", iter.nth(iter.len() / 2).unwrap());
 }
 
 fn read_inputs<T: AsRef<Path>>(path: T) -> Vec<String> {
