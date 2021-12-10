@@ -75,7 +75,7 @@ fn solution_1(inputs: &[String]) {
 fn solution_2(inputs: &[String]) {
     let mut iter = inputs
         .iter()
-        .map(|s| {
+        .filter_map(|s| {
             let mut open: VecDeque<Open> = VecDeque::new();
             for c in s.chars() {
                 match c {
@@ -86,38 +86,37 @@ fn solution_2(inputs: &[String]) {
                     ')' => {
                         let current_open = open.pop_front().unwrap();
                         if current_open != Open::Round {
-                            return 0;
+                            return None;
                         }
                     }
                     ']' => {
                         let current_open = open.pop_front().unwrap();
                         if current_open != Open::Bracket {
-                            return 0;
+                            return None;
                         }
                     }
                     '}' => {
                         let current_open = open.pop_front().unwrap();
                         if current_open != Open::Curly {
-                            return 0;
+                            return None;
                         }
                     }
                     '>' => {
                         let current_open = open.pop_front().unwrap();
                         if current_open != Open::LT {
-                            return 0;
+                            return None;
                         }
                     }
                     _ => (),
                 }
             }
-            open.iter().fold(0i64, |acc, o| match o {
+            Some(open.iter().fold(0i64, |acc, o| match o {
                 Open::Round => acc * 5 + 1,
                 Open::Bracket => acc * 5 + 2,
                 Open::Curly => acc * 5 + 3,
                 Open::LT => acc * 5 + 4,
-            })
+            }))
         })
-        .filter(|x| *x != 0)
         .sorted();
 
     println!("The middle score is {}.", iter.nth(iter.len() / 2).unwrap());
