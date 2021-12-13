@@ -1,4 +1,4 @@
-use std::{cell::Cell, collections::HashMap, fs, path::Path, rc::Rc, time::Instant};
+use std::{collections::HashMap, fs, path::Path, time::Instant};
 
 use petgraph::graph::{NodeIndex, UnGraph};
 
@@ -20,78 +20,63 @@ pub fn run() {
 }
 
 fn solution_1(inputs: &(UnGraph<(), ()>, HashMap<u32, bool>)) {
-    let count = Rc::new(Cell::new(0));
+    let count = search(inputs, 0, NodeIndex::new(0));
 
-    search(inputs, 0, &count, NodeIndex::new(0));
-
-    println!("There are {} paths through the cave system.", count.get());
+    println!("There are {} paths through the cave system.", &count);
 }
 
-fn search(
-    inputs: &(UnGraph<(), ()>, HashMap<u32, bool>),
-    visited: i16,
-    count_ref: &Rc<Cell<i32>>,
-    index: NodeIndex,
-) {
+fn search(inputs: &(UnGraph<(), ()>, HashMap<u32, bool>), visited: i16, index: NodeIndex) -> i32 {
     if index == NodeIndex::from(1) {
-        count_ref.set(count_ref.get() + 1);
-        return;
+        return 1;
     }
 
     if !inputs.1.get(&(index.index() as u32)).unwrap()
         && visited & 1 << index.index() == 1 << index.index()
     {
-        return;
+        return 0;
     }
 
     inputs
         .0
         .neighbors(index)
-        .for_each(|i| search(inputs, visited | 1 << index.index(), count_ref, i));
+        .map(|i| search(inputs, visited | 1 << index.index(), i))
+        .sum()
 }
 
 fn solution_2(inputs: &(UnGraph<(), ()>, HashMap<u32, bool>)) {
-    let count = Rc::new(Cell::new(0));
+    let count = search_2(inputs, 0, NodeIndex::new(0), false);
 
-    search_2(inputs, 0, &count, NodeIndex::new(0), false);
-
-    println!("There are {} paths through the cave system.", count.get());
+    println!("There are {} paths through the cave system.", &count);
 }
 
 fn search_2(
     inputs: &(UnGraph<(), ()>, HashMap<u32, bool>),
     visited: i16,
-    count_ref: &Rc<Cell<i32>>,
     index: NodeIndex,
     mut has_visited_twice: bool,
-) {
+) -> i32 {
     if index == NodeIndex::from(1) {
-        count_ref.set(count_ref.get() + 1);
-        return;
+        return 1;
     }
 
     if index == NodeIndex::from(0) && visited & 1 == 1 {
-        return;
+        return 0;
     }
 
     if !inputs.1.get(&(index.index() as u32)).unwrap()
         && visited & 1 << index.index() == 1 << index.index()
     {
         if has_visited_twice {
-            return;
+            return 0;
         }
         has_visited_twice = true;
     }
 
-    inputs.0.neighbors(index).for_each(|i| {
-        search_2(
-            inputs,
-            visited | 1 << index.index(),
-            count_ref,
-            i,
-            has_visited_twice,
-        )
-    });
+    inputs
+        .0
+        .neighbors(index)
+        .map(|i| search_2(inputs, visited | 1 << index.index(), i, has_visited_twice))
+        .sum()
 }
 
 fn read_inputs<T: AsRef<Path>>(path: T) -> (UnGraph<(), ()>, HashMap<u32, bool>) {
