@@ -83,10 +83,10 @@ fn solution_2(inputs: &(HashSet<(i32, i32)>, Vec<(Axis, i32)>)) {
         (x, y)
     });
 
-    let mut final_vec = vec![vec!['⬜'; highest.0 as usize + 3]; highest.1 as usize + 3];
+    let mut final_vec = vec![vec![' '; highest.0 as usize + 3]; highest.1 as usize + 3];
 
     output.iter().for_each(|o| {
-        final_vec[o.1 as usize + 1][o.0 as usize + 1] = '⬛';
+        final_vec[o.1 as usize + 1][o.0 as usize + 1] = '█';
     });
 
     final_vec
