@@ -11,6 +11,12 @@ pub fn run() {
         "It took {:?} for the first solution to complete.",
         start.elapsed()
     );
+    let start = Instant::now();
+    solution_2(&inputs);
+    println!(
+        "It took {:?} for the second solution to complete.",
+        start.elapsed()
+    );
 }
 
 fn solution_1(inputs: &[Vec<i32>]) {
@@ -39,26 +45,45 @@ fn solution_1(inputs: &[Vec<i32>]) {
                     .collect_vec()
             })
             .collect_vec();
-
-        // println!("New:");
-        // for row in &final_idk {
-        //     for elem in row {
-        //         print!("{}", elem);
-        //     }
-        //     println!();
-        // }
-
         (sum, final_idk)
     });
 
-    // for row in folding_output.1 {
-    //     for elem in row {
-    //         print!("{}", elem);
-    //     }
-    //     println!();
-    // }
-
     println!("The answer is {}", folding_output.0);
+}
+
+fn solution_2(inputs: &[Vec<i32>]) {
+    let mut acc = inputs.to_owned();
+    let mut count = 0;
+
+    loop {
+        count += 1;
+        let mut increased = acc
+            .iter()
+            .map(|r| r.iter().map(|e| e + 1).collect_vec())
+            .collect_vec();
+
+        for i in 0..increased.len() {
+            for j in 0..increased[i].len() {
+                if increased[i][j] > 9 {
+                    flash(&mut increased, i as isize, j as isize);
+                }
+            }
+        }
+
+        acc = increased
+            .iter()
+            .map(|r| {
+                r.iter()
+                    .map(|e| if *e >= 10 { 0 } else { *e })
+                    .collect_vec()
+            })
+            .collect_vec();
+
+        if acc.iter().map(|r| r.iter().sum::<i32>()).sum::<i32>() == 0 {
+            println!("The answer is {}", count);
+            break;
+        }
+    }
 }
 
 fn flash(vec: &mut [Vec<i32>], row: isize, column: isize) -> usize {
