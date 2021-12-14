@@ -24,7 +24,16 @@ fn solution_1(inputs: &[Vec<i32>]) {
         let mut increased = acc
             .1
             .iter()
-            .map(|r| r.iter().map(|e| e + 1).collect_vec())
+            .map(|r| {
+                r.iter()
+                    .map(|mut e| {
+                        if *e >= 10 {
+                            e = &0;
+                        }
+                        e + 1
+                    })
+                    .collect_vec()
+            })
             .collect_vec();
 
         let mut sum = acc.0;
@@ -37,15 +46,7 @@ fn solution_1(inputs: &[Vec<i32>]) {
             }
         }
 
-        let final_idk = increased
-            .iter()
-            .map(|r| {
-                r.iter()
-                    .map(|e| if *e >= 10 { 0 } else { *e })
-                    .collect_vec()
-            })
-            .collect_vec();
-        (sum, final_idk)
+        (sum, increased)
     });
 
     println!("The answer is {}", folding_output.0);
@@ -56,33 +57,36 @@ fn solution_2(inputs: &[Vec<i32>]) {
     let mut count = 0;
 
     loop {
-        count += 1;
-        let mut increased = acc
-            .iter()
-            .map(|r| r.iter().map(|e| e + 1).collect_vec())
-            .collect_vec();
-
-        for i in 0..increased.len() {
-            for j in 0..increased[i].len() {
-                if increased[i][j] > 9 {
-                    flash(&mut increased, i as isize, j as isize);
-                }
-            }
-        }
-
-        acc = increased
+        let mut p_count = 0;
+        acc = acc
             .iter()
             .map(|r| {
                 r.iter()
-                    .map(|e| if *e >= 10 { 0 } else { *e })
+                    .map(|mut e| {
+                        if *e >= 10 {
+                            e = &0;
+                        }
+                        p_count += e;
+                        e + 1
+                    })
                     .collect_vec()
             })
             .collect_vec();
 
-        if acc.iter().map(|r| r.iter().sum::<i32>()).sum::<i32>() == 0 {
+        if p_count == 0 {
             println!("The answer is {}", count);
             break;
         }
+
+        for i in 0..acc.len() {
+            for j in 0..acc[i].len() {
+                if acc[i][j] > 9 {
+                    flash(&mut acc, i as isize, j as isize);
+                }
+            }
+        }
+
+        count += 1;
     }
 }
 
