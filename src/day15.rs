@@ -39,7 +39,7 @@ impl Pos {
 fn solution_1(inputs: &[Vec<i32>]) {
     let goal = Pos(inputs[0].len() - 1, inputs.len() - 1);
     let result = dijkstra(&Pos(0, 0), |p| p.successors(inputs), |p| *p == goal);
-    println!("{:?}", result.unwrap().1);
+    println!("The total risk is {:?}", result.unwrap().1);
 }
 
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -82,7 +82,7 @@ impl Sol2Pos {
 fn solution_2(inputs: &[Vec<i32>]) {
     let goal = Sol2Pos(inputs[0].len() * 5 - 1, inputs.len() * 5 - 1);
     let result = dijkstra(&Sol2Pos(0, 0), |p| p.successors(inputs), |p| *p == goal);
-    println!("{:?}", result.unwrap().1);
+    println!("The total risk is {:?}", result.unwrap().1);
 }
 
 fn read_inputs<T: AsRef<Path>>(path: T) -> Vec<Vec<i32>> {
