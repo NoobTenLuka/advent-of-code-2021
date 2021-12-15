@@ -60,7 +60,7 @@ fn read_inputs<T: AsRef<Path>>(path: T) -> (String, HashMap<String, (String, Str
             let value = s.chars().nth(6).unwrap();
 
             (key, (
-                format!("{}{}", s.chars().nth(0).unwrap(), value),
+                format!("{}{}", s.chars().next().unwrap(), value),
                 format!("{}{}", value, s.chars().nth(1).unwrap())
             ))
         })
