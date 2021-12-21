@@ -100,27 +100,43 @@ fn solution_helper(
     player_1: Player,
     player_2: Player,
 ) -> (u64, u64) {
-    let mut player_1_redec = player_1.clone();
-    let mut player_2_redec = player_2.clone();
     let player_ref = if is_player_ones_turn {
-        &mut player_1_redec
+        &player_1
     } else {
-        &mut player_2_redec
+        &player_2
     };
 
-    player_ref.position = (player_ref.position + sum_of_rolls - 1) % 10 + 1;
-    player_ref.score += player_ref.position;
+    let new_pos = (player_ref.position + sum_of_rolls - 1) % 10 + 1;
+    let new_score = player_ref.score + new_pos;
 
-    if player_ref.score >= 21 {
+    if new_score >= 21 {
         if is_player_ones_turn {
             return (get_factor(sum_of_rolls), 0);
         } else {
             return (0, get_factor(sum_of_rolls));
         }
-    }
+    };
+
+    let (new_player_1, new_player_2) = if is_player_ones_turn {
+        (
+            Player {
+                position: new_pos,
+                score: new_score,
+            },
+            player_2.clone(),
+        )
+    } else {
+        (
+            player_1.clone(),
+            Player {
+                position: new_pos,
+                score: new_score,
+            },
+        )
+    };
 
     (3..=9).fold((0, 0), |acc, i| {
-        let output = solution_helper(i, !is_player_ones_turn, player_1_redec, player_2_redec);
+        let output = solution_helper(i, !is_player_ones_turn, new_player_1, new_player_2);
         (
             acc.0 + output.0 * get_factor(sum_of_rolls),
             acc.1 + output.1 * get_factor(sum_of_rolls),
