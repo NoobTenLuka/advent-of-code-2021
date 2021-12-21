@@ -123,11 +123,11 @@ fn solution_helper(
                 position: new_pos,
                 score: new_score,
             },
-            player_2.clone(),
+            player_2,
         )
     } else {
         (
-            player_1.clone(),
+            player_1,
             Player {
                 position: new_pos,
                 score: new_score,

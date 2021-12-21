@@ -8,6 +8,9 @@ enum Axis {
     Vertical,
 }
 
+type FoldingInstructions = Vec<(Axis, i32)>;
+type CoordinateSet = HashSet<(i32, i32)>;
+
 pub fn run() {
     let inputs = read_inputs("inputs/13-input.txt");
 
@@ -25,7 +28,7 @@ pub fn run() {
     );
 }
 
-fn solution_1(inputs: &(HashSet<(i32, i32)>, Vec<(Axis, i32)>)) {
+fn solution_1(inputs: &(CoordinateSet, FoldingInstructions)) {
     let first_fold = &inputs.1[0];
     let applied_first_fold: HashSet<(i32, i32)> = inputs
         .0
@@ -50,7 +53,7 @@ fn solution_1(inputs: &(HashSet<(i32, i32)>, Vec<(Axis, i32)>)) {
     println!("{:?}", applied_first_fold.len());
 }
 
-fn solution_2(inputs: &(HashSet<(i32, i32)>, Vec<(Axis, i32)>)) {
+fn solution_2(inputs: &(CoordinateSet, FoldingInstructions)) {
     let output = inputs.1.iter().fold(inputs.0.clone(), |acc, fold| {
         acc.iter()
             .map(|(mut x, mut y)| {
@@ -94,7 +97,7 @@ fn solution_2(inputs: &(HashSet<(i32, i32)>, Vec<(Axis, i32)>)) {
         .for_each(|l| println!("{}", l.iter().collect::<String>()));
 }
 
-fn read_inputs<T: AsRef<Path>>(path: T) -> (HashSet<(i32, i32)>, Vec<(Axis, i32)>) {
+fn read_inputs<T: AsRef<Path>>(path: T) -> (CoordinateSet, FoldingInstructions) {
     let file_content = fs::read_to_string(path).expect("Input file not found.");
 
     let (points, instructions) = file_content.split_once("\n\n").unwrap();
