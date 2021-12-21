@@ -88,7 +88,7 @@ fn solution_2(inputs: &(u32, u32)) {
     });
 
     println!(
-        "The player with the most wins wins in {} universes",
+        "The player with the most wins does so in {} universes",
         result.0.max(result.1)
     );
 }
