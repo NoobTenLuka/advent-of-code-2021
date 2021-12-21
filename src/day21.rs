@@ -22,11 +22,11 @@ pub fn run() {
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 struct Player {
-    pub position: u32,
-    pub score: u32,
+    pub position: u8,
+    pub score: u16,
 }
 
-fn solution_1(inputs: &(u32, u32)) {
+fn solution_1(inputs: &(u8, u8)) {
     let mut player_1 = Player {
         position: inputs.0,
         score: 0,
@@ -50,9 +50,9 @@ fn solution_1(inputs: &(u32, u32)) {
         } else {
             &mut player_2
         };
-        player_ref.position = (player_ref.position + roll - 1) % 10 + 1;
+        player_ref.position = ((player_ref.position as u32 + roll - 1) % 10 + 1) as u8;
 
-        player_ref.score += player_ref.position;
+        player_ref.score += player_ref.position as u16;
 
         if player_ref.score >= 1000 {
             break;
@@ -67,10 +67,13 @@ fn solution_1(inputs: &(u32, u32)) {
         player_1.score
     };
 
-    println!("The product is {}", number_of_rolls * losing_player_score);
+    println!(
+        "The product is {}",
+        number_of_rolls * losing_player_score as u32
+    );
 }
 
-fn solution_2(inputs: &(u32, u32)) {
+fn solution_2(inputs: &(u8, u8)) {
     let result = (3..=9).fold((0, 0), |acc, i| {
         let output = solution_helper(
             i,
@@ -95,7 +98,7 @@ fn solution_2(inputs: &(u32, u32)) {
 
 #[cached]
 fn solution_helper(
-    sum_of_rolls: u32,
+    sum_of_rolls: u8,
     is_player_ones_turn: bool,
     player_1: Player,
     player_2: Player,
@@ -107,7 +110,7 @@ fn solution_helper(
     };
 
     let new_pos = (player_ref.position + sum_of_rolls - 1) % 10 + 1;
-    let new_score = player_ref.score + new_pos;
+    let new_score = player_ref.score + new_pos as u16;
 
     if new_score >= 21 {
         if is_player_ones_turn {
@@ -143,7 +146,7 @@ fn solution_helper(
         )
     })
 }
-fn get_factor(input: u32) -> u64 {
+fn get_factor(input: u8) -> u64 {
     match input {
         3 => 1,
         4 => 3,
@@ -156,12 +159,12 @@ fn get_factor(input: u32) -> u64 {
     }
 }
 
-fn read_inputs<T: AsRef<Path>>(path: T) -> (u32, u32) {
+fn read_inputs<T: AsRef<Path>>(path: T) -> (u8, u8) {
     let file_content = fs::read_to_string(path).expect("Input file not found.");
 
     file_content
         .lines()
-        .map(|l| l.chars().last().unwrap().to_digit(10).unwrap())
+        .map(|l| l.chars().last().unwrap().to_digit(10).unwrap() as u8)
         .collect_tuple()
         .unwrap()
 }
