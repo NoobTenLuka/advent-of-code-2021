@@ -11,6 +11,7 @@ mod day13;
 mod day14;
 mod day15;
 mod day21;
+mod day22;
 
 use std::env;
 
@@ -35,6 +36,7 @@ fn main() {
         14 => day14::run(),
         15 => day15::run(),
         21 => day21::run(),
+        22 => day22::run(),
         _ => panic!("Either not a valid day or not implemented yet!"),
     };
 }
